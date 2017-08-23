@@ -9,5 +9,12 @@
     "require": {
         "symfony/routing": "^3.3",
         "klein/klein": "^2.1",
-        "twig/twig": "^2.4"}
+        "twig/twig": "^2.4",
+        "mongodb/mongodb": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "database\\": "database/"
+        }
+    }
 }
