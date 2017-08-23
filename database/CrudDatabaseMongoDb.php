@@ -20,13 +20,11 @@ class CrudDatabaseMongoDb
 	public function getAll(){
 		$conn = $this->dbConnection->connect();
 		$db = $conn->test->user;
-		foreach($db as $key => $item){
-			$doc[$key] = $key;
-			$doc[$item] = $item;
-		}
 		$doc = $db->find();
-		echo "<pre>";
-		print_r($doc);
+		foreach ($doc as $d){
+			echo "<pre>";
+			var_dump($d);
+		}
 	}
 
 }
