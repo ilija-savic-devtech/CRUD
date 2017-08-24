@@ -2,27 +2,46 @@
 
 namespace database;
 
-class CrudDatabaseMySql
+use src\Student;
+
+class CrudDatabaseMySql implements CrudDatabaseInterface
 {
 	private $dbConnection;
 
-	public function __construct(DbConnectionInterface $dbConnection)
+	public function __construct($dbConnection)
 	{
 		$this->dbConnection = $dbConnection;
 	}
 
 	public function getAll(){
-		$conn = $this->dbConnection->connect();
-		$sql = $conn->prepare("SELECT * FROM guest.student");
+		$sql = $this->dbConnection->prepare("SELECT * FROM guest.student");
 		$sql->execute();
-		$row = $sql->fetch();
-		echo"<pre>";
-		print_r($row);
-		echo "Get All<br>";
-		$conn = null;
+		$var = array();
+		foreach ($sql->fetchAll() as $row) {
+			$student = new Student();
+			$var[] = $student->setId($row['id'])->setName($row['name'])->setSurname($row['surname'])->setIndexNo($row['indexno'])->setAddress($row['address']);
+		}
+		$this->dbConnection = null;
+		return $var;
 	}
 
-	public function getOne(){
+	public function delete($id)
+	{
+		// TODO: Implement delete() method.
+	}
+
+	public function update($id)
+	{
+		// TODO: Implement update() method.
+	}
+
+	public function create()
+	{
+		// TODO: Implement create() method.
+	}
+
+	public function getOne($id){
 		echo "Get One<br>";
 	}
+
 }

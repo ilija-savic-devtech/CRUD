@@ -8,23 +8,40 @@
 
 namespace database;
 
-class CrudDatabaseMongoDb
+class CrudDatabaseMongoDb implements CrudDatabaseInterface
 {
 	private $dbConnection;
 
-	public function __construct(DbConnectionInterface $dbConnection)
+	public function __construct($dbConnection)
 	{
 		$this->dbConnection = $dbConnection;
 	}
 
 	public function getAll(){
-		$conn = $this->dbConnection->connect();
-		$db = $conn->test->user;
+		$db = $this->dbConnection->test->user;
 		$doc = $db->find();
-		foreach ($doc as $d){
-			echo "<pre>";
-			var_dump($d);
-		}
+		$this->dbConnection = null;
+		return $doc;
+	}
+
+	public function getOne($id)
+	{
+		// TODO: Implement getOne() method.
+	}
+
+	public function delete($id)
+	{
+		// TODO: Implement delete() method.
+	}
+
+	public function update($id)
+	{
+		// TODO: Implement update() method.
+	}
+
+	public function create()
+	{
+		// TODO: Implement create() method.
 	}
 
 }
