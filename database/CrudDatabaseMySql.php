@@ -7,9 +7,11 @@ use src\Student;
 class CrudDatabaseMySql implements CrudDatabaseInterface
 {
 	private $dbConnection;
+	private $student;
 
-	public function __construct($dbConnection)
+	public function __construct($dbConnection, $student = array())
 	{
+		$this->student = $student;
 		$this->dbConnection = $dbConnection;
 	}
 
@@ -18,8 +20,8 @@ class CrudDatabaseMySql implements CrudDatabaseInterface
 		$sql->execute();
 		$var = array();
 		foreach ($sql->fetchAll() as $row) {
-			$student = new Student();
-			$var[] = $student->setId($row['id'])->setName($row['name'])->setSurname($row['surname'])->setIndexNo($row['indexno'])->setAddress($row['address']);
+			$this->student = new Student();
+			$var[] = $this->student->setId($row['id'])->setName($row['name'])->setSurname($row['surname'])->setIndexNo($row['indexno'])->setAddress($row['address']);
 		}
 		$this->dbConnection = null;
 		return $var;

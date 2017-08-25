@@ -6,9 +6,10 @@ $base = $database->connect();
 
 $klein->respond('/', function() use ($base){
 	$var = $base->getAll();
+
 	foreach ($var as $student){
 		echo "<pre>";
-		var_dump($student);
+		print_r($student);
 		echo "<br>";
 	}
 

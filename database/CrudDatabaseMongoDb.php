@@ -8,20 +8,31 @@
 
 namespace database;
 
+use MongoDB\Driver\Query;
+use src\Student;
+
 class CrudDatabaseMongoDb implements CrudDatabaseInterface
 {
 	private $dbConnection;
+	private $student;
 
-	public function __construct($dbConnection)
+	public function __construct($dbConnection, $student = array())
 	{
+		$this->student = $student;
 		$this->dbConnection = $dbConnection;
 	}
 
 	public function getAll(){
-		$db = $this->dbConnection->test->user;
-		$doc = $db->find();
+		$query = new Query([]);
+		$rows = $this->dbConnection->executeQuery("test.user", $query);
+		$var = array();
+		foreach ($rows as $row) {
+			$this->student = new Student();
+			$var[] = $this->student->setId($row->_id)->setName($row->name)->setSurname($row->surname)->setIndexNo($row->indexno)->setAddress($row->address);
+
+		}
 		$this->dbConnection = null;
-		return $doc;
+		return $var;
 	}
 
 	public function getOne($id)
