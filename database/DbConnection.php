@@ -17,14 +17,6 @@ class DbConnection
 	private $crud;
 	private static $instance = null;
 
-	private function __construct()
-	{
-	}
-
-	private function __clone()
-	{
-	}
-
 	public static function getInstance()
 	{
 		if (self::$instance == null) {
@@ -34,7 +26,7 @@ class DbConnection
 		return self::$instance;
 	}
 
-	public function connect()
+	public function connect($modelObject)
 	{
 		if ($this->conn == null) {
 			if (DATABASE_IN_USE == 'mysql') {
@@ -42,7 +34,7 @@ class DbConnection
 					$this->conn = new \PDO("mysql:host=" . SERVER_NAME . ";dbname=" . DB_NAME, USERNAME, PASSWORD);
 					// set the PDO error mode to exception
 					$this->conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-					$this->crud = new CrudDatabaseMySql($this->conn, new Student());
+					$this->crud = new CrudDatabaseMySql($this->conn, $modelObject);
 
 					return $this->crud;
 				} catch
@@ -51,7 +43,7 @@ class DbConnection
 				}
 			} elseif (DATABASE_IN_USE == 'mongodb') {
 				$this->conn = new Manager(MONGODB_URI);
-				$this->crud = new CrudDatabaseMongoDb($this->conn, new Student());
+				$this->crud = new CrudDatabaseMongoDb($this->conn, $modelObject);
 
 				return $this->crud;
 			} else {
@@ -60,5 +52,13 @@ class DbConnection
 		} else {
 			return $this->crud;
 		}
+	}
+
+	private function __construct()
+	{
+	}
+
+	private function __clone()
+	{
 	}
 }

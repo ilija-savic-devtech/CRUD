@@ -1,0 +1,23 @@
+{% extends "base.twig" %}
+
+{% block title %}Homepage{% endblock %}
+{% block content %}
+    <table border="1">
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Index No</th>
+            <th>Address</th>
+        </tr>
+        {% for item in getAll %}
+            <tr>
+                <td>{{ item.getId }}</td>
+                <td>{{ item.getName }}</td>
+                <td>{{ item.getSurName }}</td>
+                <td>{{ item.getIndexNo }}</td>
+                <td>{{ item.getAddress }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

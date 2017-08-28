@@ -2,14 +2,13 @@
 require_once '..\bootstrap\bootstrap.php';
 
 
-$klein->respond('/', function() use ($base){
-	$var = $base->getAll();
-	foreach ($var as $student){
-		echo "<pre>";
-		var_dump($student);
-		echo "<br>";
-	}
+$klein->respond('/', function() use ($base, $twig){
+	$getAll = $base->getAll();
+	echo $twig->render('home.twig', array(
+		'getAll' => $getAll
+	));
 });
+
 
 $klein->dispatch();
 
