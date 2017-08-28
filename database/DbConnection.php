@@ -14,6 +14,7 @@ use src\Student;
 class DbConnection
 {
 	private static $conn;
+	private static $crud;
 
 	private function __construct()
 	{
@@ -27,21 +28,23 @@ class DbConnection
 					self::$conn = new \PDO("mysql:host=" . SERVER_NAME . ";dbname=" . DB_NAME, USERNAME, PASSWORD);
 					// set the PDO error mode to exception
 					self::$conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+					self::$crud = new CrudDatabaseMySql(self::$conn, new Student());
 
-					return new CrudDatabaseMySql(self::$conn, new Student());
+					return self::$crud;
 				} catch
 				(\PDOException $e) {
 					echo "Connection failed: " . $e->getMessage();
 				}
 			} elseif (DATABASE_IN_USE == 'mongodb') {
 				self::$conn = new Manager(MONGODB_URI);
+				self::$crud = new CrudDatabaseMongoDb(self::$conn, new Student());
 
-				return new CrudDatabaseMongoDb(self::$conn, new Student());
+				return self::$crud;
 			} else {
 				die("Not valid database is set!!!");
 			}
 		} else {
-			return self::$conn;
+			return self::$crud;
 		}
 	}
 }
