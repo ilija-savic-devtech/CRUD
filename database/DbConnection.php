@@ -13,27 +13,35 @@ use src\Student;
 
 class DbConnection
 {
+	private static $conn;
 
-	public function connect()
+	private function __construct()
 	{
-		if (DATABASE_IN_USE == 'mysql') {
-			try {
-				$conn = new \PDO("mysql:host=" . SERVER_NAME . ";dbname=" . DB_NAME, USERNAME, PASSWORD);
-				// set the PDO error mode to exception
-				$conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-				echo "Connected successfully";
+	}
 
-				return new CrudDatabaseMySql($conn, new Student());
-			} catch
-			(\PDOException $e) {
-				echo "Connection failed: " . $e->getMessage();
+	public static function connect()
+	{
+		if (self::$conn === null) {
+			if (DATABASE_IN_USE == 'mysql') {
+				try {
+					self::$conn = new \PDO("mysql:host=" . SERVER_NAME . ";dbname=" . DB_NAME, USERNAME, PASSWORD);
+					// set the PDO error mode to exception
+					self::$conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+					return new CrudDatabaseMySql(self::$conn, new Student());
+				} catch
+				(\PDOException $e) {
+					echo "Connection failed: " . $e->getMessage();
+				}
+			} elseif (DATABASE_IN_USE == 'mongodb') {
+				self::$conn = new Manager(MONGODB_URI);
+
+				return new CrudDatabaseMongoDb(self::$conn, new Student());
+			} else {
+				die("Not valid database is set!!!");
 			}
-		} elseif (DATABASE_IN_USE == 'mongodb') {
-			$conn = new Manager(MONGODB_URI);
-
-			return new CrudDatabaseMongoDb($conn, new Student());
 		} else {
-			die("Not valid database is set!!!");
+			return self::$conn;
 		}
 	}
 }

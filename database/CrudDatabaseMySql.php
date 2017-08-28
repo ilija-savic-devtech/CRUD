@@ -9,7 +9,7 @@ class CrudDatabaseMySql implements CrudDatabaseInterface
 	private $dbConnection;
 	private $student;
 
-	public function __construct($dbConnection, $student = array())
+	public function __construct($dbConnection,$student = array())
 	{
 		$this->student = $student;
 		$this->dbConnection = $dbConnection;
