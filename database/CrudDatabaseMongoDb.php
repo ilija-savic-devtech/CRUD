@@ -13,25 +13,25 @@ use src\Student;
 
 class CrudDatabaseMongoDb implements CrudDatabaseInterface
 {
-	private $dbConnection;
-	private $student;
+	private $conn;
+	private $object;
 
-	public function __construct($dbConnection, $student = array())
+	public function __construct($conn, $object)
 	{
-		$this->student = $student;
-		$this->dbConnection = $dbConnection;
+		$this->object = $object;
+		$this->conn = $conn;
 	}
 
 	public function getAll(){
 		$query = new Query([]);
-		$rows = $this->dbConnection->executeQuery("test.user", $query);
+		$rows = $this->conn->executeQuery("test.user", $query);
 		$var = array();
 		foreach ($rows as $row) {
-			$this->student = new Student();
-			$var[] = $this->student->setId($row->_id)->setName($row->name)->setSurname($row->surname)->setIndexNo($row->indexno)->setAddress($row->address);
+			$this->object = new Student();
+			$var[] = $this->object->setId($row->_id)->setName($row->name)->setSurname($row->surname)->setIndexNo($row->indexno)->setAddress($row->address);
 
 		}
-		$this->dbConnection = null;
+		$this->conn = null;
 		return $var;
 	}
 

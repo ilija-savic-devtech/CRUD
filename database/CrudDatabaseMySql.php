@@ -6,24 +6,26 @@ use src\Student;
 
 class CrudDatabaseMySql implements CrudDatabaseInterface
 {
-	private $dbConnection;
-	private $student;
+	private $conn;
+	private $object;
 
-	public function __construct($dbConnection,$student = array())
+	public function __construct($conn, $object)
 	{
-		$this->student = $student;
-		$this->dbConnection = $dbConnection;
+		$this->object = $object;
+		$this->conn = $conn;
 	}
 
-	public function getAll(){
-		$sql = $this->dbConnection->prepare("SELECT * FROM guest.student");
+	public function getAll()
+	{
+		$sql = $this->conn->prepare("SELECT * FROM guest.student");
 		$sql->execute();
 		$var = array();
-		foreach ($sql->fetchAll() as $row) {
-			$this->student = new Student();
-			$var[] = $this->student->setId($row['id'])->setName($row['name'])->setSurname($row['surname'])->setIndexNo($row['indexno'])->setAddress($row['address']);
+		foreach ($sql->fetchAll() as $row => $value) {
+			$this->object = new Student();
+			$var[] = $this->object->setId($value['id'])->setName($value['name'])->setSurname($value['surname'])->setIndexNo($value['indexno'])->setAddress($value['address']);
 		}
-		$this->dbConnection = null;
+		$this->conn = null;
+
 		return $var;
 	}
 
@@ -42,7 +44,8 @@ class CrudDatabaseMySql implements CrudDatabaseInterface
 		// TODO: Implement create() method.
 	}
 
-	public function getOne($id){
+	public function getOne($id)
+	{
 		echo "Get One<br>";
 	}
 

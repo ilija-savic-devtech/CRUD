@@ -2,8 +2,8 @@
 require_once '..\bootstrap\bootstrap.php';
 
 
-$klein->respond('/', function() use ($base, $twig){
-	$getAll = $base->getAll();
+$klein->respond('/', function() use ($twig, $crud){
+	$getAll = $crud->getAll();
 	echo $twig->render('home.twig', array(
 		'getAll' => $getAll
 	));
