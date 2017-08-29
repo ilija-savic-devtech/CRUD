@@ -5,7 +5,9 @@
  * Date: 8/24/2017
  * Time: 9:48 AM
  */
+
 namespace src;
+
 class Student
 {
 	private $id;

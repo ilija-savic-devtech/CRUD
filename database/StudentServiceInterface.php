@@ -8,7 +8,7 @@
 
 namespace database;
 
-interface CrudDatabaseInterface
+interface StudentServiceInterface
 {
 	public function getOne($id);
 	public function getAll();

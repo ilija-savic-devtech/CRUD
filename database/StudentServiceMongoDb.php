@@ -11,27 +11,31 @@ namespace database;
 use MongoDB\Driver\Query;
 use src\Student;
 
-class CrudDatabaseMongoDb implements CrudDatabaseInterface
+class StudentServiceMongoDb implements StudentServiceInterface
 {
 	private $conn;
-	private $object;
 
-	public function __construct($conn, $object)
+	public function __construct($conn)
 	{
-		$this->object = $object;
 		$this->conn = $conn;
 	}
 
-	public function getAll(){
+	public function getAll()
+	{
 		$query = new Query([]);
 		$rows = $this->conn->executeQuery("test.user", $query);
 		$var = array();
 		foreach ($rows as $row) {
-			$this->object = new Student();
-			$var[] = $this->object->setId($row->_id)->setName($row->name)->setSurname($row->surname)->setIndexNo($row->indexno)->setAddress($row->address);
-
+			$object = new Student();
+			$var[] = $object
+				->setId($row->_id)
+				->setName($row->name)
+				->setSurname($row->surname)
+				->setIndexNo($row->indexno)
+				->setAddress($row->address);
 		}
 		$this->conn = null;
+
 		return $var;
 	}
 

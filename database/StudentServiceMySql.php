@@ -4,14 +4,12 @@ namespace database;
 
 use src\Student;
 
-class CrudDatabaseMySql implements CrudDatabaseInterface
+class StudentServiceMySql implements StudentServiceInterface
 {
 	private $conn;
-	private $object;
 
-	public function __construct($conn, $object)
+	public function __construct($conn)
 	{
-		$this->object = $object;
 		$this->conn = $conn;
 	}
 
@@ -21,10 +19,15 @@ class CrudDatabaseMySql implements CrudDatabaseInterface
 		$sql->execute();
 		$var = array();
 		foreach ($sql->fetchAll() as $row => $value) {
-			$this->object = new Student();
-			$var[] = $this->object->setId($value['id'])->setName($value['name'])->setSurname($value['surname'])->setIndexNo($value['indexno'])->setAddress($value['address']);
+			$object = new Student();
+			$var[] = $object
+				->setId($value['id'])
+				->setName($value['name'])
+				->setSurname($value['surname'])
+				->setIndexNo($value['indexno'])
+				->setAddress($value['address']);
 		}
-		$this->conn = null;
+		$sql = null;
 
 		return $var;
 	}
