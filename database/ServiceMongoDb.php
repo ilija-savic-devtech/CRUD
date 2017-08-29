@@ -47,7 +47,6 @@ class ServiceMongoDb implements ServiceInterface
 		$options = [];
 		$query = new Query($filter, $options);
 		$rows = $this->conn->executeQuery("test.user", $query);
-		$var[] = array();
 		$object = new Student();
 		foreach ($rows as $row) {
 			$object
@@ -56,7 +55,6 @@ class ServiceMongoDb implements ServiceInterface
 				->setSurname($row->surname)
 				->setIndexNo($row->indexno)
 				->setAddress($row->address);
-			var_dump($object);
 		}
 		$this->conn = null;
 
