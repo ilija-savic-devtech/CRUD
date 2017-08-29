@@ -4,7 +4,7 @@ namespace database;
 
 use src\Student;
 
-class StudentServiceMySql implements StudentServiceInterface
+class ServiceMySql implements ServiceInterface
 {
 	private $conn;
 
@@ -32,9 +32,26 @@ class StudentServiceMySql implements StudentServiceInterface
 		return $var;
 	}
 
+	public function getOne($id)
+	{
+		$sql = $this->conn->prepare("SELECT * FROM guest.student WHERE id=" . $id . " LIMIT 1");
+		$sql->execute();
+		$row = $sql->fetch();
+		$object = new Student();
+		$object
+			->setId($row['id'])
+			->setName($row['name'])
+			->setSurname($row['surname'])
+			->setIndexNo($row['indexno'])
+			->setAddress($row['address']);
+
+		return $object;
+
+	}
+
 	public function delete($id)
 	{
-		// TODO: Implement delete() method.
+
 	}
 
 	public function update($id)
@@ -47,9 +64,6 @@ class StudentServiceMySql implements StudentServiceInterface
 		// TODO: Implement create() method.
 	}
 
-	public function getOne($id)
-	{
-		echo "Get One<br>";
-	}
+
 
 }

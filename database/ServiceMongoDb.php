@@ -11,7 +11,7 @@ namespace database;
 use MongoDB\Driver\Query;
 use src\Student;
 
-class StudentServiceMongoDb implements StudentServiceInterface
+class ServiceMongoDb implements ServiceInterface
 {
 	private $conn;
 

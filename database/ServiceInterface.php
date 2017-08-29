@@ -8,7 +8,7 @@
 
 namespace database;
 
-interface StudentServiceInterface
+interface ServiceInterface
 {
 	public function getOne($id);
 	public function getAll();
