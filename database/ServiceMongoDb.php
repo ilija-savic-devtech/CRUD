@@ -24,6 +24,8 @@ class ServiceMongoDb implements ServiceInterface
 	{
 		$query = new Query([]);
 		$rows = $this->conn->executeQuery("test.user", $query);
+		echo "<pre>";
+		print_r($rows);
 		$var = array();
 		foreach ($rows as $row) {
 			$object = new Student();
@@ -41,7 +43,24 @@ class ServiceMongoDb implements ServiceInterface
 
 	public function getOne($id)
 	{
-		// TODO: Implement getOne() method.
+		$filter = ["_id" => intval($id)];
+		$options = [];
+		$query = new Query($filter, $options);
+		$rows = $this->conn->executeQuery("test.user", $query);
+		$var[] = array();
+		$object = new Student();
+		foreach ($rows as $row) {
+			$object
+				->setId($row->_id)
+				->setName($row->name)
+				->setSurname($row->surname)
+				->setIndexNo($row->indexno)
+				->setAddress($row->address);
+			var_dump($object);
+		}
+		$this->conn = null;
+
+		return $object;
 	}
 
 	public function delete($id)
