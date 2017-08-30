@@ -22,45 +22,42 @@ class ServiceMongoDb implements ServiceInterface
 
 	public function getAll()
 	{
-			$query = new Query([]);
-			$rows = $this->conn->executeQuery("test.user", $query);
-			$var = array();
-			foreach ($rows as $row) {
-				$object = new Student();
-				$var[] = $object
-					->setId($row->_id)
-					->setName($row->name)
-					->setSurname($row->surname)
-					->setIndexNo($row->indexno)
-					->setAddress($row->address);
-			}
-			$this->conn = null;
+		$query = new Query([]);
+		$rows = $this->conn->executeQuery("test.user", $query);
+		$var = array();
+		foreach ($rows as $row) {
+			$object = new Student();
+			$var[] = $object
+				->setId($row->_id)
+				->setName($row->name)
+				->setSurname($row->surname)
+				->setIndexNo($row->indexno)
+				->setAddress($row->address);
+		}
+		$this->conn = null;
 
-			return $var;
+		return $var;
 
 	}
 
 	public function getOne($id)
 	{
-			$filter = ["_id" => intval($id)];
-			$options = [];
-			$query = new Query($filter, $options);
-			$rows = $this->conn->executeQuery("test.user", $query);
-			$object = new Student();
-			foreach ($rows as $row) {
-				$object
-					->setId($row->_id)
-					->setName($row->name)
-					->setSurname($row->surname)
-					->setIndexNo($row->indexno)
-					->setAddress($row->address);
-			}
-			if($object->getId() == null){
-				echo "Student with " . $id . " id, doesn't exists";
-				die();
-			}
-			$this->conn = null;
-			return $object;
+		$filter = ["_id" => intval($id)];
+		$options = [];
+		$query = new Query($filter, $options);
+		$rows = $this->conn->executeQuery("test.user", $query);
+		$object = new Student();
+		foreach ($rows as $row) {
+			$object
+				->setId($row->_id)
+				->setName($row->name)
+				->setSurname($row->surname)
+				->setIndexNo($row->indexno)
+				->setAddress($row->address);
+		}
+		$this->conn = null;
+
+		return $object;
 	}
 
 	public function delete($id)
