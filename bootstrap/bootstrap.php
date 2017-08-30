@@ -2,8 +2,12 @@
 require_once '..\vendor\autoload.php';
 require_once 'database_config.php';
 
+
 $loader = new Twig_Loader_Filesystem('..\html');
 $twig = new Twig_Environment($loader);
+$myErrors = new \exceptions\ExceptionHandler();
+
+set_exception_handler(array($myErrors, 'handle'));
 
 $conn = \database\DbConnection::getInstance();
 

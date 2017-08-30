@@ -2,6 +2,8 @@
 
 namespace database;
 
+use exceptions\EmptyTableException;
+use exceptions\InvalidIdException;
 use src\Student;
 
 class ServiceMySql implements ServiceInterface
@@ -46,7 +48,6 @@ class ServiceMySql implements ServiceInterface
 			->setAddress($row['address']);
 
 		return $object;
-
 	}
 
 	public function delete($id)
@@ -63,7 +64,5 @@ class ServiceMySql implements ServiceInterface
 	{
 		// TODO: Implement create() method.
 	}
-
-
 
 }
