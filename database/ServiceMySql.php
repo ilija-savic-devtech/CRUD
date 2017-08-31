@@ -34,7 +34,6 @@ class ServiceMySql implements ServiceInterface
 					->setIndexNo($value['indexno'])
 					->setAddress($value['address']);
 			}
-			$sql = null;
 
 			return $var;
 		} catch (EmptyTableException $e){

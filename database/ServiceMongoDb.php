@@ -70,7 +70,6 @@ class ServiceMongoDb implements ServiceInterface
 					->setIndexNo($row->indexno)
 					->setAddress($row->address);
 			}
-			$this->conn = null;
 
 			return $object;
 		} catch (ConnectionTimeoutException $e){

@@ -34,7 +34,6 @@ class DbConnection
 			return $this->conn;
 		} catch (\PDOException $e){
 			echo "Connection failed: " . $e->getMessage();
-			die();
 		}
 	}
 
