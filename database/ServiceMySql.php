@@ -17,37 +17,52 @@ class ServiceMySql implements ServiceInterface
 
 	public function getAll()
 	{
-		$sql = $this->conn->prepare("SELECT * FROM guest.student");
-		$sql->execute();
-		$var = array();
-		foreach ($sql->fetchAll() as $row => $value) {
-			$object = new Student();
-			$var[] = $object
-				->setId($value['id'])
-				->setName($value['name'])
-				->setSurname($value['surname'])
-				->setIndexNo($value['indexno'])
-				->setAddress($value['address']);
-		}
-		$sql = null;
+		try {
+			$sql = $this->conn->prepare("SELECT * FROM guest.student");
+			$sql->execute();
+			$rows = $sql->fetchAll();
+			if($rows == null){
+				throw new EmptyTableException("Table is empty");
+			}
+			$var = array();
+			foreach ($rows as $row => $value) {
+				$object = new Student();
+				$var[] = $object
+					->setId($value['id'])
+					->setName($value['name'])
+					->setSurname($value['surname'])
+					->setIndexNo($value['indexno'])
+					->setAddress($value['address']);
+			}
+			$sql = null;
 
-		return $var;
+			return $var;
+		} catch (EmptyTableException $e){
+			echo $e->getMessage();
+		}
 	}
 
 	public function getOne($id)
 	{
-		$sql = $this->conn->prepare("SELECT * FROM guest.student WHERE id=" . $id . " LIMIT 1");
-		$sql->execute();
-		$row = $sql->fetch();
-		$object = new Student();
-		$object
-			->setId($row['id'])
-			->setName($row['name'])
-			->setSurname($row['surname'])
-			->setIndexNo($row['indexno'])
-			->setAddress($row['address']);
+		try {
+			$sql = $this->conn->prepare("SELECT * FROM guest.student WHERE id=" . $id . " LIMIT 1");
+			$sql->execute();
+			$row = $sql->fetch();
+			if($row == null){
+				throw new InvalidIdException("Invalid id");
+			}
+			$object = new Student();
+			$object
+				->setId($row['id'])
+				->setName($row['name'])
+				->setSurname($row['surname'])
+				->setIndexNo($row['indexno'])
+				->setAddress($row['address']);
 
-		return $object;
+			return $object;
+		} catch (InvalidIdException $e){
+			echo $e->getMessage();
+		}
 	}
 
 	public function delete($id)

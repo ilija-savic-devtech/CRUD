@@ -26,19 +26,23 @@ class DbConnection
 
 	public function connectMySql()
 	{
+		try {
+			$this->conn = new \PDO("mysql:host=" . SERVER_NAME . ";dbname=" . DB_NAME, USERNAME, PASSWORD);
+			// set the PDO error mode to exception
+			$this->conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-		$this->conn = new \PDO("mysql:host=" . SERVER_NAME . ";dbname=" . DB_NAME, USERNAME, PASSWORD);
-		// set the PDO error mode to exception
-		$this->conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-
-		return $this->conn;
+			return $this->conn;
+		} catch (\PDOException $e){
+			echo "Connection failed: " . $e->getMessage();
+			die();
+		}
 	}
 
 	public function connectMongoDb()
 	{
-		$this->conn = new Manager(MONGODB_URI);
+			$this->conn = new Manager(MONGODB_URI);
 
-		return $this->conn;
+			return $this->conn;
 	}
 
 	private function __construct()

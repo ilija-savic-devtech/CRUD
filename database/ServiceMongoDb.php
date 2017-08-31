@@ -8,6 +8,9 @@
 
 namespace database;
 
+use exceptions\EmptyTableException;
+use exceptions\InvalidIdException;
+use MongoDB\Driver\Exception\ConnectionTimeoutException;
 use MongoDB\Driver\Query;
 use src\Student;
 
@@ -22,42 +25,60 @@ class ServiceMongoDb implements ServiceInterface
 
 	public function getAll()
 	{
-		$query = new Query([]);
-		$rows = $this->conn->executeQuery("test.user", $query);
-		$var = array();
-		foreach ($rows as $row) {
-			$object = new Student();
-			$var[] = $object
-				->setId($row->_id)
-				->setName($row->name)
-				->setSurname($row->surname)
-				->setIndexNo($row->indexno)
-				->setAddress($row->address);
+		try {
+			$query = new Query([]);
+			$rows = $this->conn->executeQuery("test.user", $query)->toArray();
+			if($rows == null){
+				throw new EmptyTableException("Table is empty");
+			}
+			$var = array();
+			foreach ($rows as $row) {
+				$object = new Student();
+				$var[] = $object
+					->setId($row->_id)
+					->setName($row->name)
+					->setSurname($row->surname)
+					->setIndexNo($row->indexno)
+					->setAddress($row->address);
+			}
+
+			return $var;
+		} catch (ConnectionTimeoutException $e){
+			echo "Connection failed: " . $e->getMessage();
+		} catch (EmptyTableException $e){
+			echo $e->getMessage();
+
 		}
-		$this->conn = null;
-
-		return $var;
-
 	}
 
 	public function getOne($id)
 	{
-		$filter = ["_id" => intval($id)];
-		$options = [];
-		$query = new Query($filter, $options);
-		$rows = $this->conn->executeQuery("test.user", $query);
-		$object = new Student();
-		foreach ($rows as $row) {
-			$object
-				->setId($row->_id)
-				->setName($row->name)
-				->setSurname($row->surname)
-				->setIndexNo($row->indexno)
-				->setAddress($row->address);
-		}
-		$this->conn = null;
+		try {
+			$filter = ["_id" => intval($id)];
+			$options = [];
+			$query = new Query($filter, $options);
+			$rows = $this->conn->executeQuery("test.user", $query)->toArray();
+			if($rows == null){
+				throw new InvalidIdException("Invalid id");
+			}
+			$object = new Student();
+			foreach ($rows as $row) {
+				$object
+					->setId($row->_id)
+					->setName($row->name)
+					->setSurname($row->surname)
+					->setIndexNo($row->indexno)
+					->setAddress($row->address);
+			}
+			$this->conn = null;
 
-		return $object;
+			return $object;
+		} catch (ConnectionTimeoutException $e){
+			echo "Connection failed: " . $e->getMessage();
+
+		} catch (InvalidIdException $e){
+			echo $e->getMessage();
+		}
 	}
 
 	public function delete($id)

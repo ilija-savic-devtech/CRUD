@@ -8,7 +8,12 @@
 
 namespace exceptions;
 
+use Throwable;
+
 class InvalidIdException extends \Exception
 {
-
+	public function __construct($message)
+	{
+		parent::__construct($message);
+	}
 }
