@@ -1,0 +1,21 @@
+{% extends "base.twig" %}
+
+{% block title %}Get One{% endblock %}
+{% block content %}
+    <table border="1">
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Index No</th>
+            <th>Address</th>
+        </tr>
+            <tr>
+                <td>{{ getOne.getId }}</td>
+                <td>{{ getOne.getName }}</td>
+                <td>{{ getOne.getSurName }}</td>
+                <td>{{ getOne.getIndexNo }}</td>
+                <td>{{ getOne.getAddress }}</td>
+            </tr>
+    </table>
+{% endblock %}

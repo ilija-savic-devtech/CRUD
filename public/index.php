@@ -9,6 +9,13 @@ $klein->respond('/', function() use ($twig, $crud){
 	));
 });
 
+$klein->respond('/[i:id]', function($request) use($twig, $crud){
+	$getOne = $crud->getOne($request->id);
+	echo $twig->render('getOne.twig', array(
+		'getOne' => $getOne
+	));
+});
+
 
 $klein->dispatch();
 

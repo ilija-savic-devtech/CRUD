@@ -32,17 +32,16 @@ class DbConnection
 			$this->conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
 			return $this->conn;
-		} catch
-		(\PDOException $e) {
+		} catch (\PDOException $e){
 			echo "Connection failed: " . $e->getMessage();
 		}
 	}
 
 	public function connectMongoDb()
 	{
-		$this->conn = new Manager(MONGODB_URI);
+			$this->conn = new Manager(MONGODB_URI);
 
-		return $this->conn;
+			return $this->conn;
 	}
 
 	private function __construct()
