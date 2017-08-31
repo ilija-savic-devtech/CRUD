@@ -11,6 +11,7 @@ namespace database;
 use exceptions\EmptyTableException;
 use exceptions\InvalidIdException;
 use MongoDB\Driver\Exception\ConnectionTimeoutException;
+use MongoDB\Driver\Manager;
 use MongoDB\Driver\Query;
 use src\Student;
 
@@ -18,7 +19,7 @@ class ServiceMongoDb implements ServiceInterface
 {
 	private $conn;
 
-	public function __construct($conn)
+	public function __construct(Manager $conn)
 	{
 		$this->conn = $conn;
 	}
