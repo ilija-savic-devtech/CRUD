@@ -39,9 +39,13 @@ class DbConnection
 
 	public function connectMongoDb()
 	{
+		try {
 			$this->conn = new Manager(MONGODB_URI);
 
 			return $this->conn;
+		} catch(\MongoConnectionException $e){
+			echo "Connection failed: " . $e->getMessage();
+		}
 	}
 
 	private function __construct()

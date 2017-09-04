@@ -64,14 +64,14 @@ class ServiceMySql implements ServiceInterface
 		}
 	}
 
-	public function create($name, $surname, $indexno, $address)
+	public function create()
 	{
 		$sql = $this->conn->prepare("INSERT INTO guest.student(name, surname, indexno, address) VALUES (:name, :surname, :indexno, :address)");
 
-		$sql->bindParam(':name', $name);
-		$sql->bindParam(':surname', $surname);
-		$sql->bindParam(':indexno', $indexno);
-		$sql->bindParam(':address', $address);
+		$sql->bindParam(':name', $_POST['name']);
+		$sql->bindParam(':surname', $_POST['surname']);
+		$sql->bindParam(':indexno', $_POST['indexno']);
+		$sql->bindParam(':address', $_POST['address']);
 
 		$sql->execute();
 	}
