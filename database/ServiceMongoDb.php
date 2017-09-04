@@ -10,6 +10,7 @@ namespace database;
 
 use exceptions\EmptyTableException;
 use exceptions\InvalidIdException;
+use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Exception\ConnectionTimeoutException;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\Query;
@@ -81,6 +82,16 @@ class ServiceMongoDb implements ServiceInterface
 		}
 	}
 
+	public function create($name, $surname, $indexno, $address)
+	{
+		$bulk = new BulkWrite();
+
+		$doc = ['name' => $name, 'surname' => $surname, 'indexno' => $indexno, 'address' => $address];
+		$bulk->insert($doc);
+
+		$this->conn->executeBulkWrite('test.user', $bulk);
+	}
+
 	public function delete($id)
 	{
 		// TODO: Implement delete() method.
@@ -89,11 +100,6 @@ class ServiceMongoDb implements ServiceInterface
 	public function update($id)
 	{
 		// TODO: Implement update() method.
-	}
-
-	public function create()
-	{
-		// TODO: Implement create() method.
 	}
 
 }
