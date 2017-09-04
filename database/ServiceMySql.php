@@ -64,6 +64,18 @@ class ServiceMySql implements ServiceInterface
 		}
 	}
 
+	public function create($name, $surname, $indexno, $address)
+	{
+		$sql = $this->conn->prepare("INSERT INTO guest.student(name, surname, indexno, address) VALUES (:name, :surname, :indexno, :address)");
+
+		$sql->bindParam(':name', $name);
+		$sql->bindParam(':surname', $surname);
+		$sql->bindParam(':indexno', $indexno);
+		$sql->bindParam(':address', $address);
+
+		$sql->execute();
+	}
+
 	public function delete($id)
 	{
 
@@ -72,11 +84,6 @@ class ServiceMySql implements ServiceInterface
 	public function update($id)
 	{
 		// TODO: Implement update() method.
-	}
-
-	public function create()
-	{
-		// TODO: Implement create() method.
 	}
 
 }

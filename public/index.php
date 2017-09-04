@@ -16,6 +16,14 @@ $klein->respond('/[i:id]', function($request) use($twig, $crud){
 	));
 });
 
+$klein->respond('/create', function() use ($twig, $crud){
+	$crud->create($_POST['name'], $_POST['surname'], $_POST['indexno'], $_POST['address']);
+	$getAll = $crud->getAll();
+	echo $twig->render('home.twig', array(
+		'getAll' => $getAll
+	));
+});
+
 
 $klein->dispatch();
 

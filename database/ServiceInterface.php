@@ -14,5 +14,5 @@ interface ServiceInterface
 	public function getAll();
 	public function delete($id);
 	public function update($id);
-	public function create();
+	public function create($name, $surname, $indexno, $address);
 }
