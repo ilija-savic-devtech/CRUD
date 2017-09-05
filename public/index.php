@@ -16,13 +16,8 @@ $klein->respond('GET','/[i:id]', function($request) use($twig, $crud){
 	));
 });
 
-$klein->respond('POST','/create', function() use ($crud){
-	try {
-		$crud->create();
-		echo "Resource successfully created";
-	} catch(Exception $e){
-		echo "Error: " . $e->getMessage();
-	}
+$klein->respond('POST','/', function() use ($crud){
+	$crud->create();
 });
 
 $klein->dispatch();

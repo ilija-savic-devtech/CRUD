@@ -96,14 +96,22 @@ class ServiceMongoDb implements ServiceInterface
 
     public function create()
     {
-        $bulk = new BulkWrite();
+        try {
+            $bulk = new BulkWrite();
 
-        $doc = ['_id' => $this->autoIncrement(),'name' => $_POST['name'], 'surname' => $_POST['surname'], 'indexno' => $_POST['indexno'], 'address' => $_POST['address']];
-        echo "<pre>";
-        var_dump($doc);
-        $bulk->insert($doc);
-        $this->conn->executeBulkWrite('test.user', $bulk);
-
+            $doc = [
+                '_id' => $this->autoIncrement(),
+                'name' => $_POST['name'],
+                'surname' => $_POST['surname'],
+                'indexno' => $_POST['indexno'],
+                'address' => $_POST['address']
+            ];
+            $bulk->insert($doc);
+            $this->conn->executeBulkWrite('test.user', $bulk);
+            echo "Resource successfully created";
+        } catch (\Exception $e){
+            echo "Error creating resource: " . $e->getMessage();
+        }
     }
 
     public function delete($id)
