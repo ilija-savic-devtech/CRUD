@@ -86,13 +86,17 @@ class ServiceMySql implements ServiceInterface
 		try{
 			$sql = $this->conn->prepare("UPDATE guest.student SET name = :name, surname = :surname, indexno = :indexno, address = :address WHERE id = " . $id);
 
-			$sql->bindParam(':name', $_POST['name']);
-			$sql->bindParam(':surname', $_POST['surname']);
-			$sql->bindParam(':indexno', $_POST['indexno']);
-			$sql->bindParam(':address', $_POST['address']);
+			 if(!empty($_POST['name']) && !empty($_POST['surname']) && !empty($_POST['indexno']) && !empty($_POST['address'])) {
+				 $sql->bindParam(':name', $_POST['name']);
+				 $sql->bindParam(':surname', $_POST['surname']);
+				 $sql->bindParam(':indexno', $_POST['indexno']);
+				 $sql->bindParam(':address', $_POST['address']);
 
-			$sql->execute();
-			echo "Resource successfully updated";
+				 $sql->execute();
+				 echo "Resource successfully updated";
+			 } else {
+				 echo "All fields required";
+			 }
 		} catch(\Exception $e){
 			echo "Error updating resource: " . $e->getMessage();
 		}

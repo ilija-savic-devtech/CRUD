@@ -24,11 +24,12 @@ class ServiceMongoDb implements ServiceInterface
         $this->conn = $conn;
     }
 
-    private final function autoIncrement(){
+    private final function autoIncrement()
+    {
         $counter = 0;
         $query = new Query([]);
         $rows = $this->conn->executeQuery("test.user", $query)->toArray();
-        if($rows == null) {
+        if ($rows == null) {
             $counter++;
             return $counter;
         } else {
@@ -36,10 +37,10 @@ class ServiceMongoDb implements ServiceInterface
             foreach ($rows as $row) {
                 $stack->push($row->_id);
             }
-                $counter = $stack->pop() + 1;
-                return $counter;
-            }
+            $counter = $stack->pop() + 1;
+            return $counter;
         }
+    }
 
 
     public function getAll()
@@ -109,29 +110,32 @@ class ServiceMongoDb implements ServiceInterface
             $bulk->insert($doc);
             $this->conn->executeBulkWrite('test.user', $bulk);
             echo "Resource successfully created";
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             echo "Error creating resource: " . $e->getMessage();
         }
     }
 
     public function update($id)
     {
-        try{
+        try {
             $bulk = new BulkWrite();
 
-            $bulk->update(['_id' => intval($id)], ['$set' =>
-                ['name' => $_POST['name'],
-                'surname' => $_POST['surname'],
-                'indexno' => $_POST['indexno'],
-                'address' => $_POST['address']
-                ]]);
+            if (!empty($_POST['name']) && !empty($_POST['surname']) && !empty($_POST['indexno']) && !empty($_POST['address'])) {
+                $bulk->update(['_id' => intval($id)], ['$set' =>
+                    ['name' => $_POST['name'],
+                        'surname' => $_POST['surname'],
+                        'indexno' => $_POST['indexno'],
+                        'address' => $_POST['address']
+                    ]]);
 
-            $this->conn->executeBulkWrite('test.user', $bulk);
-
-            echo "Resource successfully updated";
+                $this->conn->executeBulkWrite('test.user', $bulk);
+                echo "Resource successfully updated";
+            } else {
+                echo "All fields required";
+            }
         } catch (\Exception $e){
-            echo "Error updating resource: " . $e->getMessage();
-        }
+                echo "Error updating resource: " . $e->getMessage();
+            }
     }
 
     public function delete($id)
