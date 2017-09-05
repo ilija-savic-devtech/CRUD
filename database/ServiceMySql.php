@@ -81,14 +81,25 @@ class ServiceMySql implements ServiceInterface
 		}
 	}
 
+	public function update($id)
+	{
+		try{
+			$sql = $this->conn->prepare("UPDATE guest.student SET name = :name, surname = :surname, indexno = :indexno, address = :address WHERE id = " . $id);
+
+			$sql->bindParam(':name', $_POST['name']);
+			$sql->bindParam(':surname', $_POST['surname']);
+			$sql->bindParam(':indexno', $_POST['indexno']);
+			$sql->bindParam(':address', $_POST['address']);
+
+			$sql->execute();
+			echo "Resource successfully updated";
+		} catch(\Exception $e){
+			echo "Error updating resource: " . $e->getMessage();
+		}
+	}
+
 	public function delete($id)
 	{
 
 	}
-
-	public function update($id)
-	{
-		// TODO: Implement update() method.
-	}
-
 }

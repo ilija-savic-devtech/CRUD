@@ -114,14 +114,31 @@ class ServiceMongoDb implements ServiceInterface
         }
     }
 
+    public function update($id)
+    {
+        try{
+            $bulk = new BulkWrite();
+
+            $bulk->update(['_id' => intval($id)], ['$set' =>
+                ['name' => $_POST['name'],
+                'surname' => $_POST['surname'],
+                'indexno' => $_POST['indexno'],
+                'address' => $_POST['address']
+                ]]);
+
+            $this->conn->executeBulkWrite('test.user', $bulk);
+
+            echo "Resource successfully updated";
+        } catch (\Exception $e){
+            echo "Error updating resource: " . $e->getMessage();
+        }
+    }
+
     public function delete($id)
     {
         // TODO: Implement delete() method.
     }
 
-    public function update($id)
-    {
-        // TODO: Implement update() method.
-    }
+
 
 }

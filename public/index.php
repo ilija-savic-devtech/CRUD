@@ -20,6 +20,10 @@ $klein->respond('POST','/', function() use ($crud){
 	$crud->create();
 });
 
+$klein->respond('POST', '/[i:id]', function($request) use ($crud){
+	$crud->update($request->id);
+});
+
 $klein->dispatch();
 
 
