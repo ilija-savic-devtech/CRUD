@@ -64,6 +64,23 @@ class ServiceMySql implements ServiceInterface
 		}
 	}
 
+	public function create()
+	{
+		try {
+			$sql = $this->conn->prepare("INSERT INTO guest.student(name, surname, indexno, address) VALUES (:name, :surname, :indexno, :address)");
+
+			$sql->bindParam(':name', $_POST['name']);
+			$sql->bindParam(':surname', $_POST['surname']);
+			$sql->bindParam(':indexno', $_POST['indexno']);
+			$sql->bindParam(':address', $_POST['address']);
+
+			$sql->execute();
+			echo "Resource successfully created";
+		} catch (\Exception $e){
+			echo "Error creating resource: " . $e->getMessage();
+		}
+	}
+
 	public function delete($id)
 	{
 
@@ -72,11 +89,6 @@ class ServiceMySql implements ServiceInterface
 	public function update($id)
 	{
 		// TODO: Implement update() method.
-	}
-
-	public function create()
-	{
-		// TODO: Implement create() method.
 	}
 
 }
