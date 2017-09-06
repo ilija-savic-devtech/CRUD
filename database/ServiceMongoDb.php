@@ -25,7 +25,8 @@ class ServiceMongoDb implements ServiceInterface
     }
 
 
-    private final function putValues($data){
+    private final function putValues($data)
+    {
         $q = array();
         if (trim($data["name"]) !== "") {
             $q['name'] = $data['name'];
@@ -42,7 +43,8 @@ class ServiceMongoDb implements ServiceInterface
         return $q;
     }
 
-    private final function checkId($id){
+    private final function checkId($id)
+    {
         $filter = ["_id" => intval($id)];
         $options = [];
         $query = new Query($filter, $options);
@@ -146,7 +148,7 @@ class ServiceMongoDb implements ServiceInterface
             $this->checkId($id);
 
             $putValues = $this->putValues($data);
-            if($putValues > 0) {
+            if ($putValues > 0) {
                 $bulk = new BulkWrite();
 
                 $bulk->update(['_id' => intval($id)], ['$set' => $putValues]);
@@ -155,15 +157,29 @@ class ServiceMongoDb implements ServiceInterface
                 echo "Resource successfully updated";
 
             }
-        } catch (InvalidIdException $e){
+        } catch (InvalidIdException $e) {
             echo "Error: " . $e->getMessage();
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             echo "Error updating resource: " . $e->getMessage();
-            }
+        }
     }
 
     public function delete($id)
     {
-        // TODO: Implement delete() method.
+        try {
+            $this->checkId($id);
+
+            $bulk = new BulkWrite();
+
+            $bulk->delete(['_id' => intval($id)]);
+
+            $this->conn->executeBulkWrite('test.user', $bulk);
+            echo "Resource successfully deleted";
+
+        } catch (InvalidIdException $e) {
+            echo "Error: " . $e->getMessage();
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
 }

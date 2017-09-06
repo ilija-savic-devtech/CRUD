@@ -15,7 +15,8 @@ class ServiceMySql implements ServiceInterface
         $this->conn = $conn;
     }
 
-    private final function putValues($id, $data){
+    private final function putValues($id, $data)
+    {
         $putValues = array();
         $idValues = $this->checkId($id);
 
@@ -28,7 +29,8 @@ class ServiceMySql implements ServiceInterface
 
     }
 
-    private final function checkId($id){
+    private final function checkId($id)
+    {
         $sql = $this->conn->prepare("SELECT * FROM guest.student WHERE id=" . $id . " LIMIT 1");
         $sql->execute();
         $row = $sql->fetch();
@@ -120,7 +122,7 @@ class ServiceMySql implements ServiceInterface
             echo "Resource successfully updated";
 
 
-        } catch (InvalidIdException $e){
+        } catch (InvalidIdException $e) {
             echo "Error: " . $e->getMessage();
         } catch (\Exception $e) {
             echo "Error updating resource: " . $e->getMessage();
@@ -129,6 +131,17 @@ class ServiceMySql implements ServiceInterface
 
     public function delete($id)
     {
+        try {
+            $this->checkId($id);
 
+            $sql = "DELETE FROM guest.student WHERE id = " . $id;
+
+            $this->conn->exec($sql);
+            echo "Resource successfully deleted";
+        } catch (InvalidIdException $e) {
+            echo "Error: " . $e->getMessage();
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
 }
