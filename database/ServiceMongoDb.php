@@ -19,6 +19,35 @@ class ServiceMongoDb implements ServiceInterface
 {
     private $conn;
 
+    private final function putValues($data){
+        $q = array();
+        if (trim($data["name"]) !== "") {
+            $q['name'] = $data['name'];
+        }
+        if (trim($data["surname"]) !== "") {
+            $q['surname'] = $data['surname'];
+        }
+        if (trim($data["indexno"]) !== "") {
+            $q['indexno'] = $data['indexno'];
+        }
+        if (trim($data["address"]) !== "") {
+            $q['address'] = $data['address'];
+        }
+        return $q;
+    }
+
+    public final function checkId($id){
+        $filter = ["_id" => intval($id)];
+        $options = [];
+        $query = new Query($filter, $options);
+        $rows = $this->conn->executeQuery("test.user", $query)->toArray();
+        if ($rows == null) {
+            throw new InvalidIdException("Invalid id");
+        } else {
+            return $rows;
+        }
+    }
+
     public function __construct(Manager $conn)
     {
         $this->conn = $conn;
@@ -72,13 +101,8 @@ class ServiceMongoDb implements ServiceInterface
     public function getOne($id)
     {
         try {
-            $filter = ["_id" => intval($id)];
-            $options = [];
-            $query = new Query($filter, $options);
-            $rows = $this->conn->executeQuery("test.user", $query)->toArray();
-            if ($rows == null) {
-                throw new InvalidIdException("Invalid id");
-            }
+            $rows = $this->checkId($id);
+
             $object = new Student();
             foreach ($rows as $row) {
                 $object
@@ -115,26 +139,25 @@ class ServiceMongoDb implements ServiceInterface
         }
     }
 
-    public function update($id)
+    public function update($id, $data)
     {
         try {
-            $bulk = new BulkWrite();
+            $this->checkId($id);
 
-            if (!empty($_POST['name']) && !empty($_POST['surname']) && !empty($_POST['indexno']) && !empty($_POST['address'])) {
-                $bulk->update(['_id' => intval($id)], ['$set' =>
-                    ['name' => $_POST['name'],
-                        'surname' => $_POST['surname'],
-                        'indexno' => $_POST['indexno'],
-                        'address' => $_POST['address']
-                    ]]);
+            $putValues = $this->putValues($data);
+            if($putValues > 0) {
+                $bulk = new BulkWrite();
+
+                $bulk->update(['_id' => intval($id)], ['$set' => $putValues]);
 
                 $this->conn->executeBulkWrite('test.user', $bulk);
                 echo "Resource successfully updated";
-            } else {
-                echo "All fields required";
+
             }
+        } catch (InvalidIdException $e){
+            echo "Error: " . $e->getMessage();
         } catch (\Exception $e){
-                echo "Error updating resource: " . $e->getMessage();
+            echo "Error updating resource: " . $e->getMessage();
             }
     }
 
@@ -142,7 +165,4 @@ class ServiceMongoDb implements ServiceInterface
     {
         // TODO: Implement delete() method.
     }
-
-
-
 }
