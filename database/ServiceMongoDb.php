@@ -19,6 +19,12 @@ class ServiceMongoDb implements ServiceInterface
 {
     private $conn;
 
+    public function __construct(Manager $conn)
+    {
+        $this->conn = $conn;
+    }
+
+
     private final function putValues($data){
         $q = array();
         if (trim($data["name"]) !== "") {
@@ -36,7 +42,7 @@ class ServiceMongoDb implements ServiceInterface
         return $q;
     }
 
-    public final function checkId($id){
+    private final function checkId($id){
         $filter = ["_id" => intval($id)];
         $options = [];
         $query = new Query($filter, $options);
@@ -46,11 +52,6 @@ class ServiceMongoDb implements ServiceInterface
         } else {
             return $rows;
         }
-    }
-
-    public function __construct(Manager $conn)
-    {
-        $this->conn = $conn;
     }
 
     private final function autoIncrement()

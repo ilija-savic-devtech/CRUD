@@ -10,14 +10,19 @@ class ServiceMySql implements ServiceInterface
 {
     private $conn;
 
+    public function __construct(\PDO $conn)
+    {
+        $this->conn = $conn;
+    }
+
     private final function putValues($id, $data){
         $putValues = array();
-        $idValues = $this->getOne($id);
+        $idValues = $this->checkId($id);
 
-        (!empty($data['name'])) ? $putValues['name'] = $data['name'] : $putValues['name'] = $idValues->getName();
-        (!empty($data['surname'])) ? $putValues['surname'] = $data['surname'] : $putValues['surname'] = $idValues->getSurname();
-        (!empty($data['indexno'])) ? $putValues['indexno'] = $data['indexno'] : $putValues['indexno'] = $idValues->getIndexNo();
-        (!empty($data['address'])) ? $putValues['address'] = $data['address'] : $putValues['address'] = $idValues->getAddress();
+        (!empty($data['name'])) ? $putValues['name'] = $data['name'] : $putValues['name'] = $idValues['name'];
+        (!empty($data['surname'])) ? $putValues['surname'] = $data['surname'] : $putValues['surname'] = $idValues['surname'];
+        (!empty($data['indexno'])) ? $putValues['indexno'] = $data['indexno'] : $putValues['indexno'] = $idValues['indexno'];
+        (!empty($data['address'])) ? $putValues['address'] = $data['address'] : $putValues['address'] = $idValues['address'];
 
         return $putValues;
 
@@ -32,11 +37,6 @@ class ServiceMySql implements ServiceInterface
         } else {
             return $row;
         }
-    }
-
-    public function __construct(\PDO $conn)
-    {
-        $this->conn = $conn;
     }
 
     public function getAll()
