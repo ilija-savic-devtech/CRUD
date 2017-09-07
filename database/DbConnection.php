@@ -24,6 +24,10 @@ class DbConnection
 		return self::$instance;
 	}
 
+	/**
+	 * Connection for MySQL
+	 * @return \PDO
+     */
 	public function connectMySql()
 	{
 		try {
@@ -37,6 +41,10 @@ class DbConnection
 		}
 	}
 
+	/**
+	 * Connection for MongoDB
+	 * @return Manager
+     */
 	public function connectMongoDb()
 	{
 		try {

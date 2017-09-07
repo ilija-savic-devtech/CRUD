@@ -15,6 +15,10 @@ use MongoDB\Driver\Manager;
 use MongoDB\Driver\Query;
 use src\Student;
 
+/**
+ * Class ServiceMongoDb
+ * @package database
+ */
 class ServiceMongoDb implements ServiceInterface
 {
     private $conn;
@@ -25,7 +29,13 @@ class ServiceMongoDb implements ServiceInterface
     }
 
 
-    private final function putValues($data){
+    /**
+     * Store PUT resources in array
+     * @param $data
+     * @return array
+     */
+    private final function putValues($data)
+    {
         $q = array();
         if (trim($data["name"]) !== "") {
             $q['name'] = $data['name'];
@@ -42,7 +52,14 @@ class ServiceMongoDb implements ServiceInterface
         return $q;
     }
 
-    private final function checkId($id){
+    /**
+     * Checking if Id exists
+     * @param $id
+     * @return array
+     * @throws InvalidIdException
+     */
+    private final function checkId($id)
+    {
         $filter = ["_id" => intval($id)];
         $options = [];
         $query = new Query($filter, $options);
@@ -54,6 +71,10 @@ class ServiceMongoDb implements ServiceInterface
         }
     }
 
+    /**
+     * Autoincrement Id for MongoDB
+     * @return int|mixed
+     */
     private final function autoIncrement()
     {
         $counter = 0;
@@ -73,6 +94,10 @@ class ServiceMongoDb implements ServiceInterface
     }
 
 
+    /**
+     * Get all resources
+     * @return array
+     */
     public function getAll()
     {
         try {
@@ -99,6 +124,11 @@ class ServiceMongoDb implements ServiceInterface
         }
     }
 
+    /**
+     * Get one resource
+     * @param $id
+     * @return Student
+     */
     public function getOne($id)
     {
         try {
@@ -120,6 +150,9 @@ class ServiceMongoDb implements ServiceInterface
         }
     }
 
+    /**
+     * Creation of a resource
+     */
     public function create()
     {
         try {
@@ -140,13 +173,18 @@ class ServiceMongoDb implements ServiceInterface
         }
     }
 
+    /**
+     * Update of a resource
+     * @param $id
+     * @param $data
+     */
     public function update($id, $data)
     {
         try {
             $this->checkId($id);
 
             $putValues = $this->putValues($data);
-            if($putValues > 0) {
+            if ($putValues > 0) {
                 $bulk = new BulkWrite();
 
                 $bulk->update(['_id' => intval($id)], ['$set' => $putValues]);
@@ -155,15 +193,33 @@ class ServiceMongoDb implements ServiceInterface
                 echo "Resource successfully updated";
 
             }
-        } catch (InvalidIdException $e){
+        } catch (InvalidIdException $e) {
             echo "Error: " . $e->getMessage();
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             echo "Error updating resource: " . $e->getMessage();
-            }
+        }
     }
 
+    /**
+     * Deletion of a resource
+     * @param $id
+     */
     public function delete($id)
     {
-        // TODO: Implement delete() method.
+        try {
+            $this->checkId($id);
+
+            $bulk = new BulkWrite();
+
+            $bulk->delete(['_id' => intval($id)]);
+
+            $this->conn->executeBulkWrite('test.user', $bulk);
+            echo "Resource successfully deleted";
+
+        } catch (InvalidIdException $e) {
+            echo "Error: " . $e->getMessage();
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
 }

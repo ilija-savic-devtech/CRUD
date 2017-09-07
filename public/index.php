@@ -25,6 +25,8 @@ $klein->respond('PUT', '/[i:id]', function($request) use ($crud){
 	$crud->update($request->id, $put_vars);
 });
 
+$klein->respond('DELETE', '/[i:id]', function($request) use ($crud){
+	$crud->delete($request->id);
+});
+
 $klein->dispatch();
-
-
