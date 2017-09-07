@@ -20,6 +20,11 @@ $klein->respond('POST','/', function() use ($crud){
 	$crud->create();
 });
 
+$klein->respond('PUT', '/[i:id]', function($request) use ($crud){
+	parse_str(file_get_contents("php://input"),$put_vars);
+	$crud->update($request->id, $put_vars);
+});
+
 $klein->dispatch();
 
 

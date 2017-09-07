@@ -13,6 +13,6 @@ interface ServiceInterface
 	public function getOne($id);
 	public function getAll();
 	public function delete($id);
-	public function update($id);
+	public function update($id, $putData);
 	public function create();
 }
