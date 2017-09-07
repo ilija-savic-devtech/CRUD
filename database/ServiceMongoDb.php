@@ -15,6 +15,10 @@ use MongoDB\Driver\Manager;
 use MongoDB\Driver\Query;
 use src\Student;
 
+/**
+ * Class ServiceMongoDb
+ * @package database
+ */
 class ServiceMongoDb implements ServiceInterface
 {
     private $conn;
@@ -25,6 +29,11 @@ class ServiceMongoDb implements ServiceInterface
     }
 
 
+    /**
+     * Store PUT resources in array
+     * @param $data
+     * @return array
+     */
     private final function putValues($data)
     {
         $q = array();
@@ -43,6 +52,12 @@ class ServiceMongoDb implements ServiceInterface
         return $q;
     }
 
+    /**
+     * Checking if Id exists
+     * @param $id
+     * @return array
+     * @throws InvalidIdException
+     */
     private final function checkId($id)
     {
         $filter = ["_id" => intval($id)];
@@ -56,6 +71,10 @@ class ServiceMongoDb implements ServiceInterface
         }
     }
 
+    /**
+     * Autoincrement Id for MongoDB
+     * @return int|mixed
+     */
     private final function autoIncrement()
     {
         $counter = 0;
@@ -75,6 +94,10 @@ class ServiceMongoDb implements ServiceInterface
     }
 
 
+    /**
+     * Get all resources
+     * @return array
+     */
     public function getAll()
     {
         try {
@@ -101,6 +124,11 @@ class ServiceMongoDb implements ServiceInterface
         }
     }
 
+    /**
+     * Get one resource
+     * @param $id
+     * @return Student
+     */
     public function getOne($id)
     {
         try {
@@ -122,6 +150,9 @@ class ServiceMongoDb implements ServiceInterface
         }
     }
 
+    /**
+     * Creation of a resource
+     */
     public function create()
     {
         try {
@@ -142,6 +173,11 @@ class ServiceMongoDb implements ServiceInterface
         }
     }
 
+    /**
+     * Update of a resource
+     * @param $id
+     * @param $data
+     */
     public function update($id, $data)
     {
         try {
@@ -164,6 +200,10 @@ class ServiceMongoDb implements ServiceInterface
         }
     }
 
+    /**
+     * Deletion of a resource
+     * @param $id
+     */
     public function delete($id)
     {
         try {
