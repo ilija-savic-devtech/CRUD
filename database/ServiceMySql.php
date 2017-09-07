@@ -48,7 +48,8 @@ class ServiceMySql implements ServiceInterface
      */
     private final function checkId($id)
     {
-        $sql = $this->conn->prepare("SELECT * FROM guest.student WHERE id=" . $id . " LIMIT 1");
+        $sql = $this->conn->prepare("SELECT * FROM guest.student WHERE id = :id LIMIT 1");
+        $sql->bindParam(":id", $id);
         $sql->execute();
         $row = $sql->fetch();
         if ($row == null) {
@@ -175,7 +176,7 @@ class ServiceMySql implements ServiceInterface
 
             $query = "DELETE FROM guest.student WHERE id = :id";
             $stmt = $this->conn->prepare($query);
-            
+
             $stmt->bindParam(":id", $id);
 
             $stmt->execute();
