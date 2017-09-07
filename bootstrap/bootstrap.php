@@ -2,6 +2,7 @@
 require_once '..\vendor\autoload.php';
 require_once 'database_config.php';
 
+$logger = new Katzgrau\KLogger\Logger('../logs');
 
 $loader = new Twig_Loader_Filesystem('..\html');
 $twig = new Twig_Environment($loader);

@@ -1,0 +1,15 @@
+[2017-09-07 15:06:20.406358] [info] Trying to connect to MySQL database
+[2017-09-07 15:06:20.417310] [info] Connected successfully
+[2017-09-07 15:06:20.424844] [info] Trying to get one resource from database table
+[2017-09-07 15:06:20.426187] [info] Getting one resource successful
+[2017-09-07 15:06:23.587245] [info] Trying to connect to MySQL database
+[2017-09-07 15:06:23.598206] [info] Connected successfully
+[2017-09-07 15:06:23.604713] [info] Trying to get one resource from database table
+[2017-09-07 15:06:23.609879] [warning] ID doesn't exist in database table
+[2017-09-07 15:12:48.299424] [info] Trying to connect to MongoDB database
+[2017-09-07 15:12:48.350682] [info] Connected successfully
+[2017-09-07 15:12:48.358179] [info] Trying to get all resources from database table
+[2017-09-07 15:13:25.066879] [info] Trying to connect to MongoDB database
+[2017-09-07 15:13:25.067022] [info] Connected successfully
+[2017-09-07 15:13:25.073113] [info] Trying to get all resources from database table
+[2017-09-07 15:13:25.083781] [info] Getting all resources successful

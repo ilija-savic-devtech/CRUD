@@ -100,7 +100,9 @@ class ServiceMongoDb implements ServiceInterface
      */
     public function getAll()
     {
+        global $logger;
         try {
+            $logger->info("Trying to get all resources from database table");
             $query = new Query([]);
             $rows = $this->conn->executeQuery("test.user", $query)->toArray();
             if ($rows == null) {
@@ -116,9 +118,10 @@ class ServiceMongoDb implements ServiceInterface
                     ->setIndexNo($row->indexno)
                     ->setAddress($row->address);
             }
-
+            $logger->info("Getting all resources successful");
             return $var;
         } catch (EmptyTableException $e) {
+            $logger->warning("Empty table error");
             echo $e->getMessage();
 
         }
@@ -131,7 +134,9 @@ class ServiceMongoDb implements ServiceInterface
      */
     public function getOne($id)
     {
+        global $logger;
         try {
+            $logger->info("Trying to get one resource from database table");
             $rows = $this->checkId($id);
 
             $object = new Student();
@@ -143,9 +148,10 @@ class ServiceMongoDb implements ServiceInterface
                     ->setIndexNo($row->indexno)
                     ->setAddress($row->address);
             }
-
+            $logger->info("Getting one resource successful");
             return $object;
         } catch (InvalidIdException $e) {
+            $logger->warning("ID doesn't exist in database table");
             echo $e->getMessage();
         }
     }
@@ -155,7 +161,9 @@ class ServiceMongoDb implements ServiceInterface
      */
     public function create()
     {
+        global $logger;
         try {
+            $logger->info("Trying to create resource in database table");
             $bulk = new BulkWrite();
 
             $doc = [
@@ -168,7 +176,9 @@ class ServiceMongoDb implements ServiceInterface
             $bulk->insert($doc);
             $this->conn->executeBulkWrite('test.user', $bulk);
             echo "Resource successfully created";
+            $logger->info("Creating resource successful");
         } catch (\Exception $e) {
+            $logger->warning("Error creating resource in database table");
             echo "Error creating resource: " . $e->getMessage();
         }
     }
@@ -180,7 +190,9 @@ class ServiceMongoDb implements ServiceInterface
      */
     public function update($id, $data)
     {
+        global $logger;
         try {
+            $logger->info("Trying to update resource in database table");
             $this->checkId($id);
 
             $putValues = $this->putValues($data);
@@ -191,11 +203,13 @@ class ServiceMongoDb implements ServiceInterface
 
                 $this->conn->executeBulkWrite('test.user', $bulk);
                 echo "Resource successfully updated";
-
+                $logger->info("Updating resource successful in database table");
             }
         } catch (InvalidIdException $e) {
+            $logger->warning("ID doesn't exist in database table");
             echo "Error: " . $e->getMessage();
         } catch (\Exception $e) {
+            $logger->warning("Error updating resource in database table");
             echo "Error updating resource: " . $e->getMessage();
         }
     }
@@ -206,7 +220,9 @@ class ServiceMongoDb implements ServiceInterface
      */
     public function delete($id)
     {
+        global $logger;
         try {
+            $logger->info("Trying to delete resource from database table");
             $this->checkId($id);
 
             $bulk = new BulkWrite();
@@ -215,10 +231,12 @@ class ServiceMongoDb implements ServiceInterface
 
             $this->conn->executeBulkWrite('test.user', $bulk);
             echo "Resource successfully deleted";
-
+            $logger->info("Deleting resource successful from database table");
         } catch (InvalidIdException $e) {
+            $logger->warning("ID doesn't exist in database table");
             echo "Error: " . $e->getMessage();
         } catch (\Exception $e) {
+            $logger->warning("Error deleting resource from database table");
             echo "Error: " . $e->getMessage();
         }
     }
