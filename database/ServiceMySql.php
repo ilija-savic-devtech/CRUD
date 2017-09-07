@@ -144,9 +144,10 @@ class ServiceMySql implements ServiceInterface
 
             $putValues = $this->putValues($id, $data);
 
-            $query = "UPDATE guest.student SET name = :name, surname = :surname, indexno = :indexno, address = :address WHERE id = " . $id;
+            $query = "UPDATE guest.student SET name = :name, surname = :surname, indexno = :indexno, address = :address WHERE id = :id";
             $stmt = $this->conn->prepare($query);
 
+            $stmt->bindParam(":id", $id);
             $stmt->bindParam(":name", $putValues["name"]);
             $stmt->bindParam(":surname", $putValues["surname"]);
             $stmt->bindParam(":indexno", $putValues["indexno"]);
@@ -172,9 +173,12 @@ class ServiceMySql implements ServiceInterface
         try {
             $this->checkId($id);
 
-            $sql = "DELETE FROM guest.student WHERE id = " . $id;
+            $query = "DELETE FROM guest.student WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            
+            $stmt->bindParam(":id", $id);
 
-            $this->conn->exec($sql);
+            $stmt->execute();
             echo "Resource successfully deleted";
         } catch (InvalidIdException $e) {
             echo "Error: " . $e->getMessage();
