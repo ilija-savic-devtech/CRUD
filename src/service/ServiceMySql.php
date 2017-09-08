@@ -1,12 +1,12 @@
 <?php
 
-namespace database;
+namespace service;
 
 require_once '../bootstrap/bootstrap.php';
 use exceptions\EmptyTableException;
 use exceptions\InvalidIdException;
 use Katzgrau\KLogger\Logger;
-use src\Student;
+use models\Student;
 
 /**
  * Class ServiceMySql

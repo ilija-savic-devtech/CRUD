@@ -6,7 +6,7 @@
  * Time: 9:48 AM
  */
 
-namespace src;
+namespace models;
 
 class Student
 {

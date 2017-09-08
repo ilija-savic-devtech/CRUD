@@ -6,7 +6,7 @@
  * Time: 3:33 PM
  */
 
-namespace database;
+namespace service;
 
 use exceptions\EmptyTableException;
 use exceptions\InvalidIdException;
@@ -14,7 +14,7 @@ use Katzgrau\KLogger\Logger;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\Query;
-use src\Student;
+use models\Student;
 
 /**
  * Class ServiceMongoDb
