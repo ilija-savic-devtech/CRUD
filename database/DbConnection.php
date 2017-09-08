@@ -8,6 +8,7 @@
 
 namespace database;
 
+use Katzgrau\KLogger\Logger;
 use MongoDB\Driver\Manager;
 
 class DbConnection
@@ -24,13 +25,14 @@ class DbConnection
 		return self::$instance;
 	}
 
+
 	/**
 	 * Connection for MySQL
+	 * @param Logger $logger
 	 * @return \PDO
      */
-	public function connectMySql()
+	public function connectMySql(Logger $logger)
 	{
-		global $logger;
 		try {
 
 			$logger->info("Trying to connect to MySQL database");
@@ -47,11 +49,11 @@ class DbConnection
 
 	/**
 	 * Connection for MongoDB
+	 * @param Logger $logger
 	 * @return Manager
      */
-	public function connectMongoDb()
+	public function connectMongoDb(Logger $logger)
 	{
-		global $logger;
 		try {
 			$logger->info("Trying to connect to MongoDB database");
 			$this->conn = new Manager(MONGODB_URI);

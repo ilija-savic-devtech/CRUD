@@ -11,11 +11,11 @@ $conn = \database\DbConnection::getInstance();
 
 if (DATABASE_IN_USE == 'mysql') {
 	$logger->info("MySQL database in use");
-	$base = $conn->connectMySql();
+	$base = $conn->connectMySql($logger);
 	$crud = new \database\ServiceMySql($base, $logger);
 } elseif (DATABASE_IN_USE == 'mongodb') {
 	$logger->info("MongoDB database in use");
-	$base = $conn->connectMongoDb();
+	$base = $conn->connectMongoDb($logger);
 	$crud = new \database\ServiceMongoDb($base, $logger);
 } else {
 	$logger->warning("Not valid database is set, check database_config.php in bootstrap folder");
