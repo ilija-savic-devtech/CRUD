@@ -5,6 +5,7 @@ namespace database;
 require_once '../bootstrap/bootstrap.php';
 use exceptions\EmptyTableException;
 use exceptions\InvalidIdException;
+use Katzgrau\KLogger\Logger;
 use src\Student;
 
 /**
@@ -14,10 +15,11 @@ use src\Student;
 class ServiceMySql implements ServiceInterface
 {
     private $conn;
+    private $logger;
 
-
-    public function __construct(\PDO $conn)
+    public function __construct(\PDO $conn, Logger $logger)
     {
+        $this->logger = $logger;
         $this->conn = $conn;
     }
 
@@ -68,9 +70,8 @@ class ServiceMySql implements ServiceInterface
      */
     public function getAll()
     {
-        global $logger;
         try {
-            $logger->info("Trying to get all resources from database table");
+            $this->logger->info("Trying to get all resources from database table");
             $sql = $this->conn->prepare("SELECT * FROM guest.student");
             $sql->execute();
             $rows = $sql->fetchAll();
@@ -87,10 +88,10 @@ class ServiceMySql implements ServiceInterface
                     ->setIndexNo($value['indexno'])
                     ->setAddress($value['address']);
             }
-            $logger->info("Getting all resources successful");
+            $this->logger->info("Getting all resources successful");
             return $var;
         } catch (EmptyTableException $e) {
-            $logger->warning("Empty table error");
+            $this->logger->warning("Empty table error");
             echo $e->getMessage();
         }
     }
@@ -102,9 +103,8 @@ class ServiceMySql implements ServiceInterface
      */
     public function getOne($id)
     {
-        global $logger;
         try {
-            $logger->info("Trying to get one resource from database table");
+            $this->logger->info("Trying to get one resource from database table");
             $row = $this->checkId($id);
 
             $object = new Student();
@@ -114,10 +114,10 @@ class ServiceMySql implements ServiceInterface
                 ->setSurname($row['surname'])
                 ->setIndexNo($row['indexno'])
                 ->setAddress($row['address']);
-            $logger->info("Getting one resource successful");
+            $this->logger->info("Getting one resource successful");
             return $object;
         } catch (InvalidIdException $e) {
-            $logger->warning("ID doesn't exist in database table");
+            $this->logger->warning("ID doesn't exist in database table");
             echo $e->getMessage();
         }
     }
@@ -127,9 +127,8 @@ class ServiceMySql implements ServiceInterface
      */
     public function create()
     {
-        global $logger;
         try {
-            $logger->info("Trying to create resource in database table");
+            $this->logger->info("Trying to create resource in database table");
             $sql = $this->conn->prepare("INSERT INTO guest.student(name, surname, indexno, address) VALUES (:name, :surname, :indexno, :address)");
 
             $sql->bindParam(':name', $_POST['name']);
@@ -139,9 +138,9 @@ class ServiceMySql implements ServiceInterface
 
             $sql->execute();
             echo "Resource successfully created";
-            $logger->info("Creating resource successful");
+            $this->logger->info("Creating resource successful");
         } catch (\Exception $e) {
-            $logger->warning("Error creating resource in database table");
+            $this->logger->warning("Error creating resource in database table");
             echo "Error creating resource: " . $e->getMessage();
         }
     }
@@ -153,9 +152,8 @@ class ServiceMySql implements ServiceInterface
      */
     public function update($id, $data)
     {
-        global $logger;
         try {
-            $logger->info("Trying to update resource in database table");
+            $this->logger->info("Trying to update resource in database table");
             $this->checkId($id);
 
             $putValues = $this->putValues($id, $data);
@@ -171,13 +169,13 @@ class ServiceMySql implements ServiceInterface
 
             $stmt->execute();
             echo "Resource successfully updated";
-            $logger->info("Updating resource successful in database table");
+            $this->logger->info("Updating resource successful in database table");
 
         } catch (InvalidIdException $e) {
-            $logger->warning("ID doesn't exist in database table");
+            $this->logger->warning("ID doesn't exist in database table");
             echo "Error: " . $e->getMessage();
         } catch (\Exception $e) {
-            $logger->warning("Error updating resource in database table");
+            $this->logger->warning("Error updating resource in database table");
             echo "Error updating resource: " . $e->getMessage();
         }
     }
@@ -188,9 +186,8 @@ class ServiceMySql implements ServiceInterface
      */
     public function delete($id)
     {
-        global $logger;
         try {
-            $logger->info("Trying to delete resource from database table");
+            $this->logger->info("Trying to delete resource from database table");
             $this->checkId($id);
 
             $query = "DELETE FROM guest.student WHERE id = :id";
@@ -200,12 +197,12 @@ class ServiceMySql implements ServiceInterface
 
             $stmt->execute();
             echo "Resource successfully deleted";
-            $logger->info("Deleting resource successful from database table");
+            $this->logger->info("Deleting resource successful from database table");
         } catch (InvalidIdException $e) {
-            $logger->warning("ID doesn't exist in database table");
+            $this->logger->warning("ID doesn't exist in database table");
             echo "Error: " . $e->getMessage();
         } catch (\Exception $e) {
-            $logger->warning("Error deleting resource from database table");
+            $this->logger->warning("Error deleting resource from database table");
             echo "Error: " . $e->getMessage();
         }
     }
