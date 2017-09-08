@@ -10,12 +10,15 @@ $twig = new Twig_Environment($loader);
 $conn = \database\DbConnection::getInstance();
 
 if (DATABASE_IN_USE == 'mysql') {
+	$logger->info("MySQL database in use");
 	$base = $conn->connectMySql();
 	$crud = new \database\ServiceMySql($base);
 } elseif (DATABASE_IN_USE == 'mongodb') {
+	$logger->info("MongoDB database in use");
 	$base = $conn->connectMongoDb();
 	$crud = new \database\ServiceMongoDb($base);
 } else {
+	$logger->warning("Not valid database is set, check database_config.php in bootstrap folder");
 	die("Not valid database is set!!!");
 }
 
