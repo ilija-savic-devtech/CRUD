@@ -4,10 +4,10 @@ require_once 'database_config.php';
 
 $logger = new Katzgrau\KLogger\Logger('../logs');
 
-$loader = new Twig_Loader_Filesystem('..\html');
+$loader = new Twig_Loader_Filesystem('..\public\views');
 $twig = new Twig_Environment($loader);
 
-$conn = \database\DbConnection::getInstance();
+$conn = 
 
 if (DATABASE_IN_USE == 'mysql') {
 	$logger->info("MySQL database in use");

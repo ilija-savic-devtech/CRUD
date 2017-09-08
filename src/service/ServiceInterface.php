@@ -6,7 +6,7 @@
  * Time: 9:42 AM
  */
 
-namespace database;
+namespace service;
 
 interface ServiceInterface
 {

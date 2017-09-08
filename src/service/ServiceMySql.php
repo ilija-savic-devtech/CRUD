@@ -1,101 +1,68 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ilija.savic
- * Date: 8/23/2017
- * Time: 3:33 PM
- */
 
-namespace database;
+namespace service;
 
+require_once '../bootstrap/bootstrap.php';
 use exceptions\EmptyTableException;
 use exceptions\InvalidIdException;
 use Katzgrau\KLogger\Logger;
-use MongoDB\Driver\BulkWrite;
-use MongoDB\Driver\Manager;
-use MongoDB\Driver\Query;
 use src\Student;
 
 /**
- * Class ServiceMongoDb
+ * Class ServiceMySql
  * @package database
  */
-class ServiceMongoDb implements ServiceInterface
+class ServiceMySql implements ServiceInterface
 {
     private $conn;
     private $logger;
 
-    public function __construct(Manager $conn, Logger $logger)
+    public function __construct(\PDO $conn, Logger $logger)
     {
         $this->logger = $logger;
         $this->conn = $conn;
     }
 
-
     /**
      * Store PUT resources in array
+     * @param $id
      * @param $data
      * @return array
+     * @throws InvalidIdException
      */
-    private final function putValues($data)
+    private final function putValues($id, $data)
     {
-        $q = array();
-        if (trim($data["name"]) !== "") {
-            $q['name'] = $data['name'];
-        }
-        if (trim($data["surname"]) !== "") {
-            $q['surname'] = $data['surname'];
-        }
-        if (trim($data["indexno"]) !== "") {
-            $q['indexno'] = $data['indexno'];
-        }
-        if (trim($data["address"]) !== "") {
-            $q['address'] = $data['address'];
-        }
-        return $q;
+
+        $putValues = array();
+        $idValues = $this->checkId($id);
+
+        (!empty($data['name'])) ? $putValues['name'] = $data['name'] : $putValues['name'] = $idValues['name'];
+        (!empty($data['surname'])) ? $putValues['surname'] = $data['surname'] : $putValues['surname'] = $idValues['surname'];
+        (!empty($data['indexno'])) ? $putValues['indexno'] = $data['indexno'] : $putValues['indexno'] = $idValues['indexno'];
+        (!empty($data['address'])) ? $putValues['address'] = $data['address'] : $putValues['address'] = $idValues['address'];
+
+        return $putValues;
+
     }
 
     /**
      * Checking if Id exists
      * @param $id
-     * @return array
+     * @return mixed
      * @throws InvalidIdException
      */
     private final function checkId($id)
     {
-        $filter = ["_id" => intval($id)];
-        $options = [];
-        $query = new Query($filter, $options);
-        $rows = $this->conn->executeQuery("test.user", $query)->toArray();
-        if ($rows == null) {
+        $sql = $this->conn->prepare("SELECT * FROM guest.student WHERE id = :id LIMIT 1");
+        $sql->bindParam(":id", $id);
+        $sql->execute();
+        $row = $sql->fetch();
+        if ($row == null) {
             throw new InvalidIdException("Invalid id");
         } else {
-            return $rows;
+            return $row;
         }
     }
-
-    /**
-     * Autoincrement Id for MongoDB
-     * @return int|mixed
-     */
-    private final function autoIncrement()
-    {
-        $counter = 0;
-        $query = new Query([]);
-        $rows = $this->conn->executeQuery("test.user", $query)->toArray();
-        if ($rows == null) {
-            $counter++;
-            return $counter;
-        } else {
-            $stack = new \SplStack();
-            foreach ($rows as $row) {
-                $stack->push($row->_id);
-            }
-            $counter = $stack->pop() + 1;
-            return $counter;
-        }
-    }
-
 
     /**
      * Get all resources
@@ -105,27 +72,27 @@ class ServiceMongoDb implements ServiceInterface
     {
         try {
             $this->logger->info("Trying to get all resources from database table");
-            $query = new Query([]);
-            $rows = $this->conn->executeQuery("test.user", $query)->toArray();
+            $sql = $this->conn->prepare("SELECT * FROM guest.student");
+            $sql->execute();
+            $rows = $sql->fetchAll();
             if ($rows == null) {
                 throw new EmptyTableException("Table is empty");
             }
             $var = array();
-            foreach ($rows as $row) {
+            foreach ($rows as $row => $value) {
                 $object = new Student();
                 $var[] = $object
-                    ->setId($row->_id)
-                    ->setName($row->name)
-                    ->setSurname($row->surname)
-                    ->setIndexNo($row->indexno)
-                    ->setAddress($row->address);
+                    ->setId($value['id'])
+                    ->setName($value['name'])
+                    ->setSurname($value['surname'])
+                    ->setIndexNo($value['indexno'])
+                    ->setAddress($value['address']);
             }
             $this->logger->info("Getting all resources successful");
             return $var;
         } catch (EmptyTableException $e) {
             $this->logger->warning("Empty table error");
             echo $e->getMessage();
-
         }
     }
 
@@ -138,17 +105,15 @@ class ServiceMongoDb implements ServiceInterface
     {
         try {
             $this->logger->info("Trying to get one resource from database table");
-            $rows = $this->checkId($id);
+            $row = $this->checkId($id);
 
             $object = new Student();
-            foreach ($rows as $row) {
-                $object
-                    ->setId($row->_id)
-                    ->setName($row->name)
-                    ->setSurname($row->surname)
-                    ->setIndexNo($row->indexno)
-                    ->setAddress($row->address);
-            }
+            $object
+                ->setId($row['id'])
+                ->setName($row['name'])
+                ->setSurname($row['surname'])
+                ->setIndexNo($row['indexno'])
+                ->setAddress($row['address']);
             $this->logger->info("Getting one resource successful");
             return $object;
         } catch (InvalidIdException $e) {
@@ -164,17 +129,14 @@ class ServiceMongoDb implements ServiceInterface
     {
         try {
             $this->logger->info("Trying to create resource in database table");
-            $bulk = new BulkWrite();
+            $sql = $this->conn->prepare("INSERT INTO guest.student(name, surname, indexno, address) VALUES (:name, :surname, :indexno, :address)");
 
-            $doc = [
-                '_id' => $this->autoIncrement(),
-                'name' => $_POST['name'],
-                'surname' => $_POST['surname'],
-                'indexno' => $_POST['indexno'],
-                'address' => $_POST['address']
-            ];
-            $bulk->insert($doc);
-            $this->conn->executeBulkWrite('test.user', $bulk);
+            $sql->bindParam(':name', $_POST['name']);
+            $sql->bindParam(':surname', $_POST['surname']);
+            $sql->bindParam(':indexno', $_POST['indexno']);
+            $sql->bindParam(':address', $_POST['address']);
+
+            $sql->execute();
             echo "Resource successfully created";
             $this->logger->info("Creating resource successful");
         } catch (\Exception $e) {
@@ -194,16 +156,21 @@ class ServiceMongoDb implements ServiceInterface
             $this->logger->info("Trying to update resource in database table");
             $this->checkId($id);
 
-            $putValues = $this->putValues($data);
-            if ($putValues > 0) {
-                $bulk = new BulkWrite();
+            $putValues = $this->putValues($id, $data);
 
-                $bulk->update(['_id' => intval($id)], ['$set' => $putValues]);
+            $query = "UPDATE guest.student SET name = :name, surname = :surname, indexno = :indexno, address = :address WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
 
-                $this->conn->executeBulkWrite('test.user', $bulk);
-                echo "Resource successfully updated";
-                $this->logger->info("Updating resource successful in database table");
-            }
+            $stmt->bindParam(":id", $id);
+            $stmt->bindParam(":name", $putValues["name"]);
+            $stmt->bindParam(":surname", $putValues["surname"]);
+            $stmt->bindParam(":indexno", $putValues["indexno"]);
+            $stmt->bindParam(":address", $putValues["address"]);
+
+            $stmt->execute();
+            echo "Resource successfully updated";
+            $this->logger->info("Updating resource successful in database table");
+
         } catch (InvalidIdException $e) {
             $this->logger->warning("ID doesn't exist in database table");
             echo "Error: " . $e->getMessage();
@@ -223,11 +190,12 @@ class ServiceMongoDb implements ServiceInterface
             $this->logger->info("Trying to delete resource from database table");
             $this->checkId($id);
 
-            $bulk = new BulkWrite();
+            $query = "DELETE FROM guest.student WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
 
-            $bulk->delete(['_id' => intval($id)]);
+            $stmt->bindParam(":id", $id);
 
-            $this->conn->executeBulkWrite('test.user', $bulk);
+            $stmt->execute();
             echo "Resource successfully deleted";
             $this->logger->info("Deleting resource successful from database table");
         } catch (InvalidIdException $e) {
