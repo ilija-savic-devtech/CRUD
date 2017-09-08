@@ -14,7 +14,7 @@ use Katzgrau\KLogger\Logger;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\Query;
-use src\Student;
+use models\Student;
 
 /**
  * Class ServiceMongoDb

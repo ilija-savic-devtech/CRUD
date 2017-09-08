@@ -14,6 +14,7 @@
     },
     "autoload": {
         "psr-4": {
+            "database\\": "database/",
             "service\\": "src/service/",
             "models\\": "src/models/",
             "exceptions\\": "src/exceptions/"
