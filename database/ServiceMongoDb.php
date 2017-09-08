@@ -10,6 +10,7 @@ namespace database;
 
 use exceptions\EmptyTableException;
 use exceptions\InvalidIdException;
+use Katzgrau\KLogger\Logger;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\Query;
@@ -22,9 +23,11 @@ use src\Student;
 class ServiceMongoDb implements ServiceInterface
 {
     private $conn;
+    private $logger;
 
-    public function __construct(Manager $conn)
+    public function __construct(Manager $conn, Logger $logger)
     {
+        $this->logger = $logger;
         $this->conn = $conn;
     }
 
@@ -101,6 +104,7 @@ class ServiceMongoDb implements ServiceInterface
     public function getAll()
     {
         try {
+            $this->logger->info("Trying to get all resources from database table");
             $query = new Query([]);
             $rows = $this->conn->executeQuery("test.user", $query)->toArray();
             if ($rows == null) {
@@ -116,9 +120,10 @@ class ServiceMongoDb implements ServiceInterface
                     ->setIndexNo($row->indexno)
                     ->setAddress($row->address);
             }
-
+            $this->logger->info("Getting all resources successful");
             return $var;
         } catch (EmptyTableException $e) {
+            $this->logger->warning("Empty table error");
             echo $e->getMessage();
 
         }
@@ -132,6 +137,7 @@ class ServiceMongoDb implements ServiceInterface
     public function getOne($id)
     {
         try {
+            $this->logger->info("Trying to get one resource from database table");
             $rows = $this->checkId($id);
 
             $object = new Student();
@@ -143,9 +149,10 @@ class ServiceMongoDb implements ServiceInterface
                     ->setIndexNo($row->indexno)
                     ->setAddress($row->address);
             }
-
+            $this->logger->info("Getting one resource successful");
             return $object;
         } catch (InvalidIdException $e) {
+            $this->logger->warning("ID doesn't exist in database table");
             echo $e->getMessage();
         }
     }
@@ -156,6 +163,7 @@ class ServiceMongoDb implements ServiceInterface
     public function create()
     {
         try {
+            $this->logger->info("Trying to create resource in database table");
             $bulk = new BulkWrite();
 
             $doc = [
@@ -168,7 +176,9 @@ class ServiceMongoDb implements ServiceInterface
             $bulk->insert($doc);
             $this->conn->executeBulkWrite('test.user', $bulk);
             echo "Resource successfully created";
+            $this->logger->info("Creating resource successful");
         } catch (\Exception $e) {
+            $this->logger->warning("Error creating resource in database table");
             echo "Error creating resource: " . $e->getMessage();
         }
     }
@@ -181,6 +191,7 @@ class ServiceMongoDb implements ServiceInterface
     public function update($id, $data)
     {
         try {
+            $this->logger->info("Trying to update resource in database table");
             $this->checkId($id);
 
             $putValues = $this->putValues($data);
@@ -191,11 +202,13 @@ class ServiceMongoDb implements ServiceInterface
 
                 $this->conn->executeBulkWrite('test.user', $bulk);
                 echo "Resource successfully updated";
-
+                $this->logger->info("Updating resource successful in database table");
             }
         } catch (InvalidIdException $e) {
+            $this->logger->warning("ID doesn't exist in database table");
             echo "Error: " . $e->getMessage();
         } catch (\Exception $e) {
+            $this->logger->warning("Error updating resource in database table");
             echo "Error updating resource: " . $e->getMessage();
         }
     }
@@ -207,6 +220,7 @@ class ServiceMongoDb implements ServiceInterface
     public function delete($id)
     {
         try {
+            $this->logger->info("Trying to delete resource from database table");
             $this->checkId($id);
 
             $bulk = new BulkWrite();
@@ -215,10 +229,12 @@ class ServiceMongoDb implements ServiceInterface
 
             $this->conn->executeBulkWrite('test.user', $bulk);
             echo "Resource successfully deleted";
-
+            $this->logger->info("Deleting resource successful from database table");
         } catch (InvalidIdException $e) {
+            $this->logger->warning("ID doesn't exist in database table");
             echo "Error: " . $e->getMessage();
         } catch (\Exception $e) {
+            $this->logger->warning("Error deleting resource from database table");
             echo "Error: " . $e->getMessage();
         }
     }

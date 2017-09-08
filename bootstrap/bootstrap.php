@@ -2,6 +2,7 @@
 require_once '..\vendor\autoload.php';
 require_once 'database_config.php';
 
+$logger = new Katzgrau\KLogger\Logger('../logs');
 
 $loader = new Twig_Loader_Filesystem('..\html');
 $twig = new Twig_Environment($loader);
@@ -9,12 +10,15 @@ $twig = new Twig_Environment($loader);
 $conn = \database\DbConnection::getInstance();
 
 if (DATABASE_IN_USE == 'mysql') {
-	$base = $conn->connectMySql();
-	$crud = new \database\ServiceMySql($base);
+	$logger->info("MySQL database in use");
+	$base = $conn->connectMySql($logger);
+	$crud = new \database\ServiceMySql($base, $logger);
 } elseif (DATABASE_IN_USE == 'mongodb') {
-	$base = $conn->connectMongoDb();
-	$crud = new \database\ServiceMongoDb($base);
+	$logger->info("MongoDB database in use");
+	$base = $conn->connectMongoDb($logger);
+	$crud = new \database\ServiceMongoDb($base, $logger);
 } else {
+	$logger->warning("Not valid database is set, check database_config.php in bootstrap folder");
 	die("Not valid database is set!!!");
 }
 
