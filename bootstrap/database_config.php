@@ -4,11 +4,11 @@ define('DATABASE_IN_USE', 'mongodb');
 
 //MySql config
 define('SERVER_NAME', 'localhost:3306');
-define('USERNAME', 'user');
-define('PASSWORD', 'user123');
+define('USERNAME', 'root');
+define('PASSWORD', 'NoIdea(*(989');
 define('DB_NAME', 'guest');
 
 //MongoDb config
-define('MONGODB_USERNAME', 'guest');
-define('MONGODB_PASSWORD', 'guest123');
+define('MONGODB_USERNAME', 'admin');
+define('MONGODB_PASSWORD', '123456');
 

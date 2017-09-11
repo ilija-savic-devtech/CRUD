@@ -19,5 +19,8 @@
             "models\\": "src/models/",
             "exceptions\\": "src/exceptions/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "6.2"
     }
 }
