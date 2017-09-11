@@ -56,7 +56,7 @@ class DbConnection
 	{
 		try {
 			$logger->info("Trying to connect to MongoDB database");
-			$this->conn = new Manager(MONGODB_URI);
+			$this->conn = new Manager('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . "@localhost:27017/test");
 			$logger->info("Connected successfully");
 			return $this->conn;
 		} catch(\MongoConnectionException $e){
