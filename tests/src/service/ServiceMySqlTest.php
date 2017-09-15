@@ -8,7 +8,6 @@
  */
 namespace testservice;
 
-use database\DbConnection;
 use Katzgrau\KLogger\Logger;
 use PHPUnit\Framework\TestCase;
 use service\ServiceMySql;
@@ -18,8 +17,7 @@ class ServiceMySqlTest extends TestCase
 {
     public function testGetAll(){
 
-        $mockDatabase= \Mockery::mock('database\DbConnection');
-        $mockPdo = \Mockery::mock('PDO');
+        $mockDatabase= \Mockery::mock('PDO');
         $logger = new Logger('logs');
         $stmtMock = \Mockery::mock('PDOStatement');
 
@@ -37,7 +35,6 @@ class ServiceMySqlTest extends TestCase
         $stmtMock->shouldReceive('execute')->andReturn(true);
         $stmtMock->shouldReceive('fetchAll')->andReturn($rowset);
 
-        $mockDatabase->shouldReceive('connectMySql')->andReturn($mockPdo);
         $mockDatabase->shouldReceive('prepare')->andReturn($stmtMock);
 
         $service = new ServiceMySql($mockDatabase, $logger);
@@ -47,8 +44,7 @@ class ServiceMySqlTest extends TestCase
 
     public function testGetOne(){
         //Mock Objects
-        $mockDatabase= \Mockery::mock('database\DbConnection');
-        $mockPdo = \Mockery::mock('PDO');
+        $mockDatabase= \Mockery::mock('PDO');
         $logger = new Logger('logs');
         $stmtMock = \Mockery::mock('PDOStatement');
 
@@ -67,7 +63,6 @@ class ServiceMySqlTest extends TestCase
         $stmtMock->shouldReceive('bindParam')->andReturn(true);
         $stmtMock->shouldReceive('fetch')->andReturn($rowset[0]);
 
-        $mockDatabase->shouldReceive('connectMySql')->andReturn($mockPdo);
         $mockDatabase->shouldReceive('prepare')->andReturn($stmtMock);
 
         $service = new ServiceMySql($mockDatabase, $logger);

@@ -16,7 +16,7 @@ class ServiceMySql implements ServiceInterface
     private $conn;
     private $logger;
 
-    public function __construct($conn, Logger $logger)
+    public function __construct(\PDO $conn, Logger $logger)
     {
         $this->logger = $logger;
         $this->conn = $conn;
