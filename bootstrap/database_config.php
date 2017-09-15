@@ -1,6 +1,6 @@
 <?php
 //Select database
-define('DATABASE_IN_USE', 'mongodb');
+define('DATABASE_IN_USE', 'mysql');
 
 //MySql config
 define('SERVER_NAME', 'localhost:3306');

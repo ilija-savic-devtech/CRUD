@@ -1,7 +1,6 @@
 <?php
 require_once '..\bootstrap\bootstrap.php';
 
-
 $klein->respond('GET','/', function() use ($twig, $crud){
 	$getAll = $crud->getAll();
 	echo $twig->render('home.twig', array(

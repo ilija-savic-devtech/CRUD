@@ -17,10 +17,13 @@
             "database\\": "database/",
             "service\\": "src/service/",
             "models\\": "src/models/",
-            "exceptions\\": "src/exceptions/"
+            "exceptions\\": "src/exceptions/",
+            "testservice\\": "tests/src/service/"
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "6.2"
+        "phpunit/phpunit": "6.2",
+        "mockery/mockery": "dev-master",
+        "phpunit/dbunit": "dev-master"
     }
 }

@@ -2,7 +2,6 @@
 
 namespace service;
 
-require_once '../bootstrap/bootstrap.php';
 use exceptions\EmptyTableException;
 use exceptions\InvalidIdException;
 use Katzgrau\KLogger\Logger;
@@ -17,7 +16,7 @@ class ServiceMySql implements ServiceInterface
     private $conn;
     private $logger;
 
-    public function __construct(\PDO $conn, Logger $logger)
+    public function __construct($conn, Logger $logger)
     {
         $this->logger = $logger;
         $this->conn = $conn;
