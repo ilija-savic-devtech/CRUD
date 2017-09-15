@@ -2,7 +2,6 @@
 
 namespace service;
 
-require_once '../bootstrap/bootstrap.php';
 use exceptions\EmptyTableException;
 use exceptions\InvalidIdException;
 use Katzgrau\KLogger\Logger;
